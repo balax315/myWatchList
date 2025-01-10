@@ -43,7 +43,7 @@ nav li a:hover {
     border-color: #b8daff;
     border-radius: 5px;
 }
-
+/* index 输入框相关样式*/
 input[type=submit] {
     font-family: inherit;
 }
