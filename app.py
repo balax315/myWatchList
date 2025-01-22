@@ -96,7 +96,7 @@ def forge():
         {'title': 'The Pork of Music', 'year': '2012'},
     ]
 
-    user = User(name = name)
+    user = User(name=name, username='leo', password_hash=generate_password_hash('123'))
     db.session.add(user)
     for m in movies:
         movie = Movie(title=m['title'], year=m['year'])
@@ -121,16 +121,19 @@ def login():
         password = request.form['password']
 
         if not username or not password:
-            flash('Invalid input.')
+            flash('Invalid username or password.')
             return redirect(url_for('login'))
 
-        user = User.query.first()
-        if username == user.username and user.validate_password(password):
-            login_user(user)
-            flash('Login success.')
-            return redirect(url_for('index'))
-        flash('Invalid username or password.')
-        return redirect(url_for('login'))
+        user = User.query.filter_by(username=username).first()
+        #用户不存在 或者密码错误，返回登录页面
+        if not user or not user.validate_password(password):
+            flash('Invalid username or password.')
+            return redirect(url_for('login'))
+
+        login_user(user)
+        flash('Login success.')
+        return redirect(url_for('index'))
+
     return render_template('login.html')
 
 
@@ -144,7 +147,7 @@ def logout():
 @app.route('/settings', methods=['GET', 'POST'])
 @login_required
 def settings():
-    if request.methon == 'POST':
+    if request.method == 'POST':
         name = request.form['name']
         if not name or len(name) > 20:
             flash('Invalid input.')
@@ -199,14 +202,6 @@ def delete(movie_id):
     db.session.commit()
     flash('Item deleted.')
     return redirect(url_for('index'))
-
-
-@app.route('/signin', methods=['POST'])
-def signin():
-    # 需要从request对象读取表单内容：
-    if request.form['username']=='admin' and request.form['password']=='password':
-        return '<h3>Hello, admin!</h3>'
-    return '<h3>Bad username or password.</h3>'
 
 if __name__ == '__main__':
     app.run()

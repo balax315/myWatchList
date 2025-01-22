@@ -3,4 +3,7 @@
 __pycache__
 .DS_Store
 .idea
+.venv
 *.db
+htmlcov/
+.coverage
