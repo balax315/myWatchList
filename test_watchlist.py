@@ -12,9 +12,6 @@ class WatchListTestCase(unittest.TestCase):
             SQLALCHEMY_DATABASE_URI='sqlite:///:memory:'  # 使用内存中的 SQLite 数据库
         )
 
-        # 创建应用上下文
-        self.app_context = app.app_context()
-        self.app_context.push()
 
         # 创建数据库和表
         db.create_all()
@@ -31,9 +28,6 @@ class WatchListTestCase(unittest.TestCase):
         print('tearDown')
         db.session.remove()
         db.drop_all()
-
-        # 移除应用上下文
-        self.app_context.pop()
 
     def test_app_exist(self):
         self.assertIsNotNone(app)
